@@ -42,7 +42,9 @@ func (w *walk) OnVisit(fn Visiter) *walk {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	w.visiters = append(w.visiters, fn)
+	if fn != nil {
+		w.visiters = append(w.visiters, fn)
+	}
 	return w
 }
 
@@ -50,7 +52,9 @@ func (w *walk) Check(fn Checker) *walk {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	w.checkers = append(w.checkers, fn)
+	if fn != nil {
+		w.checkers = append(w.checkers, fn)
+	}
 	return w
 }
 
@@ -58,7 +62,9 @@ func (w *walk) FilterError(fn ErrorFilter) *walk {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	w.errorFilters = append(w.errorFilters, fn)
+	if fn != nil {
+		w.errorFilters = append(w.errorFilters, fn)
+	}
 	return w
 }
 
@@ -88,7 +94,7 @@ func (w *walk) WalkDir(root string) error {
 			if err == ErrCheckSkipDir {
 				return filepath.SkipDir
 			}
-			return err
+			return nil
 		}
 
 		if err := w.handleVisiters(f); err != nil {
